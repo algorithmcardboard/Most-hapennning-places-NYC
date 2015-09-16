@@ -1,6 +1,6 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -54,9 +54,18 @@ public class WordCount {
 
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
+    ArrayList<String> list = new ArrayList<String>();
     String[] words = {"hackathon", "Dec", "Chicago", "Java"};
-    conf.setStrings("wordsToCheck", words);
-    
+    for(int i = 2; i < args.length; i++) {
+        list.add(args[i]);
+    }
+    if(list.size() > 0) {
+        String[] wordlist = list.toArray(new String[list.size()]);
+        conf.setStrings("wordsToCheck", wordlist);
+    } else {
+        conf.setStrings("wordsToCheck", words);
+    }
+
     Job job = Job.getInstance(conf, "word count");    
     job.setJarByClass(WordCount.class);
     job.setMapperClass(TokenizerMapper.class);
