@@ -22,13 +22,14 @@ public class PageRankIterative {
     public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
         String line = value.toString();
-        String[] tokens = line.split("\\s");
-        
+        String[] tokens = line.split("\\s+");
+        System.out.println("Line:" + line); 
         StringBuffer sb = new StringBuffer();
         String prValue = tokens[tokens.length - 1]; 
-        
+        System.out.println("Token length:" + tokens.length);
         for(int i = 1; i < tokens.length - 1; i++) {
           sb.append(tokens[i] + " ");
+          System.out.println(">>>>>>>>>>>>>>" + tokens[i]);
           Double newPR = Double.parseDouble(prValue) / (tokens.length - 2);
 	  target.set(tokens[i]);
           targetValue.set(tokens[0] + "," + newPR.toString());
@@ -58,7 +59,7 @@ public class PageRankIterative {
           outlinks = targetValue;
         }
       }
-      result.set(outlinks + sumPR.doubleValue());
+      result.set(outlinks + sumPR.toString().substring(0, sumPR.toString().length() - 2)); 
       context.write(key, result);
     }
   }
