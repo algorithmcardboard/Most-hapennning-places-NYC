@@ -2,7 +2,7 @@ InputData = LOAD 'input';
 
 Tokens = foreach InputData generate TOKENIZE((chararray)$0) as word;
 Tokens = foreach Tokens generate FLATTEN(word) as word;
-Tokens = foreach Tokens generate LOWER(word) as word;
+Tokens = foreach Tokens generate FLATTEN(REGEX_EXTRACT_ALL(LOWER(word),'.*?([a-z]+).*?')) as word;
 
 FilteredData = FILTER Tokens BY (word matches '.*hackathon.*' OR word matches '.*dec.*' OR word matches '.*chicago.*' OR word matches '.*java.*');
 
