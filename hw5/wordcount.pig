@@ -10,6 +10,8 @@ Tokens = foreach Tokens generate FLATTEN(REGEX_EXTRACT_ALL(LOWER(word),'.*?([a-z
 FilteredData = FILTER Tokens BY (word matches '.*hackathon.*' OR word matches '.*dec.*' OR word matches '.*chicago.*' OR word matches '.*java.*');
 
 -- Group
+FilteredData = FILTER Tokens BY (word matches '.*hackathon.*' OR word matches '.*dec.*' OR word matches '.*chicago.*' OR word matches '.*java.*');
+
 Groups = GROUP FilteredData BY word;
 
 Result = foreach Groups generate group, COUNT(FilteredData);
