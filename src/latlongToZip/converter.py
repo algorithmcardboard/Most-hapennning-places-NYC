@@ -2,7 +2,7 @@
 
 from geopy.geocoders import Nominatim
 geolocator = Nominatim()
-location = geolocator.reverse("52.509669, 13.376294")
+location = geolocator.reverse("-73.984138, 40.726317")
 print(location.address)
 print((location.latitude, location.longitude))
 print(location.raw)
