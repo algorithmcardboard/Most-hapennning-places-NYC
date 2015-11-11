@@ -3,3 +3,6 @@ Find the most hapennign place in NYC.  This is a project for Realtime and bigdat
 
 # Directory structure
  * src - all the source files
+
+# List of required HPC modules
+* module load virtualenv/12.1.1
