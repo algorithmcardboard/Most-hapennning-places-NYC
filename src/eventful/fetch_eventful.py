@@ -15,12 +15,9 @@ if not EF_API_KEY:
 	sys.exit(1)
 
 payload = {'app_key': EF_API_KEY, 'location':'NYC', 'date': 'Past', 'page_size' : 100}
-
 res = requests.get(SEARCH_ENDPOINT, params=payload)
-
-req_count = json.loads(res.text.encode("utf-8"))
-
-count = req_count['page_count']
+res_json = json.loads(res.text.encode("utf-8"))
+count = res_json['page_count']
 
 print count
 
