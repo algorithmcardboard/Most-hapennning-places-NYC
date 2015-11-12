@@ -22,7 +22,7 @@ req_count = json.loads(res.text.encode("utf-8"))
 
 count = req_count['page_count']
 
-print count
+#print count
 
 for i in range(5):
 	event_payload = {'app_key': EF_API_KEY, 'location':'NYC', 'date': 'Past', 'page_number': i + 1, 'page_size' : 20}
