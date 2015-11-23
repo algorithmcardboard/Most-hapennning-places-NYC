@@ -21,12 +21,13 @@ count = res_json['page_count']
 
 print count
 
-for i in range(5):
-	event_payload = {'app_key': EF_API_KEY, 'location':'NYC', 'date': 'Past', 'page_number': i + 1, 'page_size' : 20}
+for i in range(1570, 1930):
+	print i+1
+	event_payload = {'app_key': EF_API_KEY, 'location':'NYC', 'date': 'Past', 'page_number': i + 1, 'page_size' : 100}
 	res = requests.get(SEARCH_ENDPOINT, params=event_payload)
 
-	with open(os.path.join("output/", str(i+1)), "w") as file:
+	with open(os.path.join("/home/ns3184/project/Most-hapennning-places-NYC/data/", str(i+1)), "w") as file:
 		file.write(res.text.encode("utf-8"))
 
-	time.sleep(4)
+	time.sleep(5)
 #print res.text.encode("utf-8")

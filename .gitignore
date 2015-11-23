@@ -60,3 +60,4 @@ data
 .venv
 *.swp
 .env
+data/
