@@ -1,6 +1,7 @@
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql import Row
+from datetime import datetime
 
 ## Module Constants
 APP_NAME = "Most Happening place"
@@ -21,11 +22,18 @@ def main(sc):
 
 	######
 	df = events.select(events["events.event"]).flatMap(lambda p: p.event)
-	df1 = df.map(lambda p: Row(id=p.id, title=p.title, lat=float(p.latitude), long=float(p.longitude), postal_code=p.postal_code, start_time=p.start_time, stop_time= p.stop_time))
- 	eventsTable = sqlContext.inferSchema(df1)
+	df1 = df.map(lambda p: Row(
+		id=p.id,\
+		title=p.title, \
+		lat=float(p.latitude), \
+		long=p.longitude, \
+		postal_code=p.postal_code, \
+		start_time=datetime.strptime(p.start_time, "%Y-%m-%d %H:%M:%S"), \
+		stop_time=p.stop_time)) 	
+	eventsTable = sqlContext.inferSchema(df1)
 	eventsTable.registerTempTable("events")
 	eventsTable.printSchema()
-	eventsTable.select(eventsTable.id).show()
+	eventsTable.select(eventsTable.id).count()
 
 
 if __name__ == "__main__":
