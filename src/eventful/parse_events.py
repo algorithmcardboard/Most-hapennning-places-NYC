@@ -7,7 +7,7 @@ from datetime import datetime
 APP_NAME = "Most Happening place"
 
 def main(sc):
-    	path = "1"
+    	path = "events"
     	#text_file = sc.textFile(path)
     	sqlContext = SQLContext(sc)
     	events = sqlContext.jsonFile(path)
@@ -25,15 +25,21 @@ def main(sc):
 	df1 = df.map(lambda p: Row(
 		id=p.id,\
 		title=p.title, \
-		lat=float(p.latitude), \
+		lat=p.latitude, \
 		long=p.longitude, \
 		postal_code=p.postal_code, \
 		start_time=datetime.strptime(p.start_time, "%Y-%m-%d %H:%M:%S"), \
 		stop_time=p.stop_time)) 	
+	df2 = sqlContext.createDataFrame(df1)
 	eventsTable = sqlContext.inferSchema(df1)
 	eventsTable.registerTempTable("events")
 	eventsTable.printSchema()
-	eventsTable.select(eventsTable.id).count()
+	#print eventsTable.select(eventsTable.id).count()
+	print df2.groupBy('postal_code').count().show()
+	print df2.where("postal_code is null").count()
+	print df2.where("lat is null").count()
+	print df2.where("long is null").count()
+
 
 
 if __name__ == "__main__":
