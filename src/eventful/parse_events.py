@@ -35,10 +35,12 @@ def main(sc):
 	eventsTable.registerTempTable("events")
 	eventsTable.printSchema()
 	#print eventsTable.select(eventsTable.id).count()
-	print df2.groupBy('postal_code').count().show()
-	print df2.where("postal_code is null").count()
-	print df2.where("lat is null").count()
-	print df2.where("long is null").count()
+	#print df2.groupBy('postal_code').count().show()
+	print df2.where("lat is not null and long is not null").groupBy("lat", "long").count().show()
+	#print df2.where("postal_code is not null").groupBy("postal_code").count().show()
+	#print df2.where("postal_code is not null").count()
+	#print df2.where("lat is null").count()
+	#print df2.where("long is null").count()
 
 
 
