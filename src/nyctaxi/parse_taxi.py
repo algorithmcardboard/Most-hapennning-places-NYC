@@ -8,7 +8,7 @@ from pyspark.sql.types import *
 APP_NAME = "Most Happening place"
 
 def main(sc):
-    	path = "taxi"
+    	path = "taxi2"
     	sqlContext = SQLContext(sc)
     	taxiFile = sc.textFile(path)
 	header = taxiFile.first()
@@ -29,7 +29,7 @@ def main(sc):
 	fields[15].dataType = FloatType()
 	fields[16].dataType = FloatType()
 	fields[17].dataType = FloatType()
-
+	"""
 	fields = [StructField('vendor_id',StringType(),True),
 	StructField('pickup_datetime',TimestampType(),True), 
 	StructField('dropoff_datetime',TimestampType(),True), 
@@ -48,7 +48,7 @@ def main(sc):
 	StructField('tip_amount',FloatType(),True), 
 	StructField('tolls_amount',FloatType(),True), 
 	StructField('total_amount',FloatType(),True)]
-	
+	"""	
 	#construct schema
 	schema = StructType(fields)
 
@@ -58,12 +58,13 @@ def main(sc):
 
 	# split the data 
 	taxi_temp = taxiNoHeader.map(lambda k: k.split(",")).map(lambda p: (p[0], datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S"), datetime.strptime(p[2], "%Y-%m-%d %H:%M:%S"), int(p[3]), float(p[4]), float(p[5]) , float(p[6]), p[7] , p[8], float(p[9]), float(p[10]), p[11], float(p[12]), float(p[13]), float(p[14]), float(p[15]), float(p[16]), float(p[17]) ))
-
-	# merge schema with the data
-	taxi_df = sqlContext.createDataFrame(taxi_temp, schema)
 	
-	print taxi_df.count()
-
+	
+	# merge schema with the data
+	#taxi_df = sqlContext.createDataFrame(taxi_temp, schema)
+	taxi_temp.count()	
+	#print taxi_df.count()
+	#print taxiFile.count()
 if __name__ == "__main__":
 	conf = SparkConf().setAppName(APP_NAME)
     	sc   = SparkContext(conf=conf)
