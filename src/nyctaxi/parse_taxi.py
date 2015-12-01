@@ -8,7 +8,7 @@ from pyspark.sql.types import *
 APP_NAME = "Most Happening place"
 
 def main(sc):
-    path = "taxi2"
+    path = "taxi3/aa"
     sqlContext = SQLContext(sc)
     taxiFile = sc.textFile(path)
     header = taxiFile.first()
@@ -51,7 +51,9 @@ def main(sc):
     """	
     #construct schema
     schema = StructType(fields)
-
+    taxiHeader = taxiFile.filter(lambda l: "vendor_id" in l)
+    taxiNoHeader = taxiFile.subtract(taxiHeader)
+    
     #print taxiNoHeader.count()
 
     # split the data 
