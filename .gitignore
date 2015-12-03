@@ -62,3 +62,4 @@ data
 .env
 data/
 python_packages
+.ipynb_checkpoints
