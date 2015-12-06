@@ -79,12 +79,18 @@ def main(sc):
     float(p[17] if p[17]!="" else 0) ))
 	
     #print taxi_rdd.count()
-		
-    # merge schema with the data
+
     taxi_df = sqlContext.createDataFrame(taxi_rdd, schema)
-    #taxi_temp.count()	
-    print taxi_df.count()
-    #print taxiFile.count()
+
+    taxi_df.registerTempTable("taxi")
+
+    sqlContext.registerFunction("hour", lambda x: x.hour)
+
+    th = sqlContext.sql("SELECT hour(dropoff_datetime) as hour,dropoff_longitude as lng,dropoff_latitude as lat FROM taxi where dropoff_longitude!=0 and dropoff_latitude!=0")
+
+    th.registerTempTable("taxi_hr")
+
+    taxi_hr = sqlContext.sql("select hour, count(*) from taxi_hr group by hour")
 
 
 if __name__ == "__main__":
