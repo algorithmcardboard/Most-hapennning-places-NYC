@@ -12,49 +12,31 @@ def main(sc):
     taxiFile = sc.textFile("taxi3/aa")
     header = taxiFile.first()
 
-    fields = [StructField(field_name, StringType(), True) for field_name in header.split(',')]
-    fields[1].dataType = TimestampType()
-    fields[2].dataType = TimestampType()
-    fields[3].dataType = IntegerType()
-    fields[4].dataType = FloatType()
-    fields[5].dataType = FloatType()
-    fields[6].dataType = FloatType()
-    fields[9].dataType = FloatType()
-    fields[10].dataType = FloatType()
-    fields[12].dataType = FloatType()
-    fields[13].dataType = FloatType()
-    fields[14].dataType = FloatType()
-    fields[15].dataType = FloatType()
-    fields[16].dataType = FloatType()
-    fields[17].dataType = FloatType()
-
-    schema = StructType(fields)
     taxiHeader = taxiFile.filter(lambda l: "vendor_id" in l)
     taxiNoHeader = taxiFile.subtract(taxiHeader)
 
     taxi_temp = taxiNoHeader.map(lambda k: k.split(","))
 
-    taxi_rdd = taxi_temp.map(lambda p: (p[0],
-    datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S"),
-    datetime.strptime(p[2], "%Y-%m-%d %H:%M:%S"),
-    int(p[3] if p[3]!="" else 0),
-    float(p[4] if p[4]!="" else 0),
-    float(p[5] if p[5]!="" else 0) ,
-    float(p[6] if p[6]!="" else 0),
-    p[7],
-    p[8],
-    float(p[9] if p[9]!="" else 0),
-    float(p[10] if p[10]!="" else 0),
-    p[11],
-    float(p[12] if p[12]!="" else 0),
-    float(p[13] if p[13]!="" else 0),
-    float(p[14] if p[14]!="" else 0),
-    float(p[15] if p[15]!="" else 0),
-    float(p[16] if p[16]!="" else 0),
-    float(p[17] if p[17]!="" else 0)))
+    taxi_rdd = taxi_temp.map(lambda p: Row(vendor_id=p[0],
+    pickup_datetime=datetime.strptime(p[1], "%Y-%m-%d %H:%M:%S"),
+    dropoff_datetime=datetime.strptime(p[2], "%Y-%m-%d %H:%M:%S"),
+    passenger_count=int(p[3] if p[3]!="" else 0),
+    trip_distance=float(p[4] if p[4]!="" else 0),
+    pickup_longitude=float(p[5] if p[5]!="" else 0) ,
+    pickup_latitude=float(p[6] if p[6]!="" else 0),
+    rate_code=p[7],
+    store_and_fwd_flag=p[8],
+    dropoff_longitude=float(p[9] if p[9]!="" else 0),
+    dropoff_latitude=float(p[10] if p[10]!="" else 0),
+    payment_type=p[11],
+    fare_amount=float(p[12] if p[12]!="" else 0),
+    surcharge=float(p[13] if p[13]!="" else 0),
+    mta_tax=float(p[14] if p[14]!="" else 0),
+    tip_amount=float(p[15] if p[15]!="" else 0),
+    tolls_amount=float(p[16] if p[16]!="" else 0),
+    total_amount=float(p[17] if p[17]!="" else 0)))
 
-
-    taxi_df = sqlContext.createDataFrame(taxi_rdd, schema)
+    taxi_df = sqlContext.createDataFrame(taxi_rdd)
 
     taxi_df.registerTempTable("taxi")
 
