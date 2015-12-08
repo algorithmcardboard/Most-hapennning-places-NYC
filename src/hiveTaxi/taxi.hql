@@ -1,8 +1,7 @@
-drop table Taxi;
-CREATE EXTERNAL TABLE Taxi(
+CREATE EXTERNAL TABLE IF NOT EXISTS Taxi(
 	vendor_id STRING,
-	pickup_datetime DATE,
-	dropoff_datetime DATE,
+	pickup_datetime TIMESTAMP,
+	dropoff_datetime TIMESTAMP,
 	passenger_count INT,
 	trip_distance INT,
 	pickup_longitude DOUBLE,
@@ -18,11 +17,8 @@ CREATE EXTERNAL TABLE Taxi(
 	tip_amount DOUBLE,
 	tolls_amount DOUBLE,
 	total_amount DOUBLE)
-ROW FORMAT delimited fields terminated by ',' STORED AS textfile
+ROW FORMAT delimited fields terminated by ',' STORED AS textfile location '/user/ajr619/hive_taxi'
 tblproperties ("skip.header.line.count"="1");
 
 describe Taxi;
 
-LOAD DATA INPATH 'nyc_taxi_data.csv' OVERWRITE INTO TABLE Taxi;
-
-select AVG(total_amount) from Taxi;
