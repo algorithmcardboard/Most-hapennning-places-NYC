@@ -7,9 +7,12 @@ from pyspark.sql.types import *
 ## Module Constants
 APP_NAME = "Most Happening place"
 
+def toCSV(data):
+    return ','.join(str(d) for d in data)
+
 def main(sc):
     sqlContext = SQLContext(sc)
-    taxiFile = sc.textFile("taxi3/aa")
+    taxiFile = sc.textFile("taxizip/taxizipaa.csv")
     header = taxiFile.first()
 
     taxiHeader = taxiFile.filter(lambda l: "vendor_id" in l)
@@ -34,23 +37,31 @@ def main(sc):
     mta_tax=float(p[14] if p[14]!="" else 0),
     tip_amount=float(p[15] if p[15]!="" else 0),
     tolls_amount=float(p[16] if p[16]!="" else 0),
-    total_amount=float(p[17] if p[17]!="" else 0)))
+    total_amount=float(p[17] if p[17]!="" else 0),
+    zipcode=p[18]))
 
     taxi_df = sqlContext.createDataFrame(taxi_rdd)
 
     taxi_df.registerTempTable("taxi")
 
     sqlContext.registerFunction("to_hour", lambda x: x.hour)
-    sqlContext.registerFunction("to_date", lambda x: x.date())
-    sqlContext.registerFunction("str_date", lambda x: str(x.month) + "-" + str(x.day))
+    sqlContext.registerFunction("str_date", lambda x: str(x.month) + "-" + str(x.day) + "-" + str(x.year))
  
-    th = sqlContext.sql("SELECT to_hour(dropoff_datetime) as hour, to_date(dropoff_datetime) as trip_date, dropoff_longitude as lng,dropoff_latitude as lat FROM taxi where dropoff_longitude!=0 and dropoff_latitude!=0")
+    th = sqlContext.sql("SELECT to_hour(dropoff_datetime) as hour, dropoff_datetime as trip_date, dropoff_longitude as lng,dropoff_latitude as lat,zipcode FROM taxi where dropoff_longitude!=0 and dropoff_latitude!=0")
 
     th.registerTempTable("taxi_hr")
+    sqlcontext.cacheTable("taxi_hr")
 
-    test_hr = sqlContext.sql("select hour, count(*) from taxi_hr group by hour,trip_date")
-    #test_hr = sqlContext.sql("select hour, zipcode,trip_date, count(*) as c from taxi_hr group by hour,zipcode,trip_date order by c desc")
-    print test_hr.count()
+    grouped_taxi = sqlContext.sql("select hour, zipcode,str_date(trip_date), count(*) as c from taxi_hr group by hour,zipcode,str_date(trip_date) order by c desc")
+    grouped_taxi.show(100)
+ 
+    #save this intermediate result to a file as csv
+    grouped_csv = grouped_taxi.map(toCSV)
+    groupd_csv.saveAsTextFile('results')
+
+    grouped_taxi.registerTempTable("taxi_grouped")
+    sqlcontext.cacheTable("taxi_grouped")
+
 
 if __name__ == "__main__":
     conf = SparkConf().setAppName(APP_NAME)
