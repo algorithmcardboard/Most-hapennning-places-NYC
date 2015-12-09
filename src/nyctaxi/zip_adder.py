@@ -6,7 +6,7 @@ import json
 from shapely.geometry import shape, Point
 
 count = 0
-NUM_PROCESS = 20
+NUM_PROCESS = 12
 
 GEO_JSON_FILE = '/scratch/ajr619/Most-hapennning-places-NYC/data/zipcode.geojson'
 geof = open(GEO_JSON_FILE, 'r')
@@ -19,8 +19,10 @@ def worker(chunk):
     row = chunk[0]
     #6,7,10,11
 
-    pickup_lon = row[5].strip()
-    pickup_lat = row[6].strip()
+    print(len(row))
+    print(row)
+    pickup_lon = row[0].strip()
+    pickup_lat = row[1].strip()
     pickup_zipcode = '' 
 
     if len(pickup_lon) > 0 and len(pickup_lat) > 0:
@@ -36,25 +38,7 @@ def worker(chunk):
     #else:
         #print("pickup lat long not available ", pickup_lat, pickup_lon)
 
-    dropoff_lon = row[9].strip()
-    dropoff_lat = row[10].strip()
-    dropoff_zipcode = '' 
-
-    if len(dropoff_lon) > 0 and len(dropoff_lat) > 0:
-        dropoff_point = Point(float(dropoff_lon),float(dropoff_lat))
-        for feature in geo_js['features']:
-            polygon = shape(feature['geometry'])
-            if polygon.contains(dropoff_point):
-                dropoff_zipcode = feature['properties']['postalCode']
-                print "dropoff: got zipcode"
-                break
-            #else:
-                #print("dropoff polygon not available", dropoff_lat, dropoff_lon)
-    #else:
-        #print("dropoff lat long not available ", dropoff_lat, dropoff_lon)
-
     row.append(pickup_zipcode)
-    row.append(dropoff_zipcode)
     return row 
 
 # `row` is one row of the CSV file.
@@ -66,12 +50,11 @@ def keyfunc(row):
 
 
 def main():
-    INPUT_FILE = '/scratch/ajr619/Most-hapennning-places-NYC/data/taxi/taxi_split_01000'
-    OUTPUT_FILE = '/scratch/ajr619/Most-hapennning-places-NYC/data/taxi/out_1'
+    INPUT_FILE = '/scratch/ajr619/Most-hapennning-places-NYC/data/taxi_latlng/uniq_latlongs.tsv.new'
+    OUTPUT_FILE = '/scratch/ajr619/Most-hapennning-places-NYC/data/taxi_latlng/latlong_with_zip.csv'
 
     inf = open(INPUT_FILE,'r')
     outf = open(OUTPUT_FILE,'w')
-
 
     datareader = csv.reader(inf)
     datawriter = csv.writer(outf)
