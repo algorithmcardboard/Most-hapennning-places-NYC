@@ -4,6 +4,7 @@
 #PBS -l mem=64GB
 #PBS -N zipCode_adder
 #PBS -M ajr619@nyu.edu
+#PBS -m e
 #PBS -j oe
 
 module purge
