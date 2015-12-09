@@ -1,7 +1,7 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=20
-#PBS -l walltime=16:00:00
-#PBS -l mem=128GB
+#PBS -l nodes=1:ppn=12
+#PBS -l walltime=8:00:00
+#PBS -l mem=64GB
 #PBS -N zipCode_adder
 #PBS -M ajr619@nyu.edu
 #PBS -j oe

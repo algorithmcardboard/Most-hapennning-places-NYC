@@ -29,10 +29,12 @@ def worker(chunk):
             polygon = shape(feature['geometry'])
             if polygon.contains(pickup_point):
                 pickup_zipcode = feature['properties']['postalCode']
-            else:
-                print("pickup not available in polygon ", pickup_lat, pickup_lon)
-    else:
-        print("pickup lat long not available ", pickup_lat, pickup_lon)
+                print "pickup: got zipcode"
+                break
+            #else:
+                #print("pickup polygon not available", pickup_lat, pickup_lon)
+    #else:
+        #print("pickup lat long not available ", pickup_lat, pickup_lon)
 
     dropoff_lon = row[9].strip()
     dropoff_lat = row[10].strip()
@@ -44,10 +46,12 @@ def worker(chunk):
             polygon = shape(feature['geometry'])
             if polygon.contains(dropoff_point):
                 dropoff_zipcode = feature['properties']['postalCode']
-            else:
-                print("dropoff not available in polygon ", dropoff_lat, dropoff_lon)
-    else:
-        print("dropoff lat long not available ", dropoff_lat, dropoff_lon)
+                print "dropoff: got zipcode"
+                break
+            #else:
+                #print("dropoff polygon not available", dropoff_lat, dropoff_lon)
+    #else:
+        #print("dropoff lat long not available ", dropoff_lat, dropoff_lon)
 
     row.append(pickup_zipcode)
     row.append(dropoff_zipcode)
@@ -81,12 +85,12 @@ def main():
             groups = [list(chunk) for key, chunk in itertools.islice(chunks, NUM_PROCESS)]
             if groups:
                 result = pool.map(worker, groups)
+                print("writing :", iteration);
                 for r in result:
                     datawriter.writerow(r)
             else:
                 break
             iteration = iteration +1
-            print("End of set:", iteration);
     pool.close()
     pool.join()
 
