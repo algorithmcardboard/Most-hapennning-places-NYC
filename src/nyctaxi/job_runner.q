@@ -9,7 +9,7 @@
 
 module purge
 
-SRCDIR=$HOME/workspace/Most-hapennning-places-NYC/
+SRCDIR=$HOME/project/Most-hapennning-places-NYC/
 RUNDIR=$SCRATCH/Most-hapennning-places-NYC/run-${PBS_JOBID/.*}
 mkdir -p $RUNDIR
 

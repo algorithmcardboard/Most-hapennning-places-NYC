@@ -33,6 +33,9 @@ c INT);
 
 INSERT OVERWRITE TABLE cluster select TO_DATE(pickup_datetime) as date, hour, zipcode, count(*) as c from pickup group by TO_DATE(pickup_datetime),hour,zipcode order by hour,zipcode;
 
+INSERT OVERWRITE LOCAL DIRECTORY '/scratch/ns3184/aggregates' ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',' select date, hour, zipcode, c from cluster order by hour,zipcode;
 
 
-
+INSERT OVERWRITE LOCAL DIRECTORY '/scratch/ns3184/averages' ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',' select zipcode, hour, avg(c) from cluster group by hour,zipcode;

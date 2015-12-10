@@ -1,0 +1,13 @@
+#!/bin/sh
+#PBS -V
+#PBS -N ADDZIPTOTAXI
+#PBS -l nodes=1:ppn=16,walltime=12:00:00
+#PBS -M ns3184@nyu.edu
+#PBS -m abe
+#PBS -e localhost:$PBS_O_WORKDIR/${PBS_JOBNAME}.e${PBS_JOBID}
+#PBS -o localhost:$PBS_O_WORKDIR/${PBS_JOBNAME}.o${PBS_JOBID}
+
+cd /home/ns3184/project/Most-hapennning-places-NYC/src/shapelytest/
+module load shapely
+python addziptotaxijob.py
+exit 0;

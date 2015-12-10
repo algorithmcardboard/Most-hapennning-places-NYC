@@ -50,17 +50,17 @@ def main(sc):
     th = sqlContext.sql("SELECT to_hour(dropoff_datetime) as hour, dropoff_datetime as trip_date, dropoff_longitude as lng,dropoff_latitude as lat,zipcode FROM taxi where dropoff_longitude!=0 and dropoff_latitude!=0")
 
     th.registerTempTable("taxi_hr")
-    sqlcontext.cacheTable("taxi_hr")
+    sqlContext.cacheTable("taxi_hr")
 
     grouped_taxi = sqlContext.sql("select hour, zipcode,str_date(trip_date), count(*) as c from taxi_hr group by hour,zipcode,str_date(trip_date) order by c desc")
     grouped_taxi.show(100)
  
     #save this intermediate result to a file as csv
     grouped_csv = grouped_taxi.map(toCSV)
-    groupd_csv.saveAsTextFile('results')
+    grouped_csv.saveAsTextFile('results')
 
     grouped_taxi.registerTempTable("taxi_grouped")
-    sqlcontext.cacheTable("taxi_grouped")
+    sqlContext.cacheTable("taxi_grouped")
 
 
 if __name__ == "__main__":
