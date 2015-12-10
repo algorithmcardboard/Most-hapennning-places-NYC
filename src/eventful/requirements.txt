@@ -1,5 +1,5 @@
 click==5.1
-lxml==3.4.4
+#lxml==3.4.4
 ordereddict==1.1
 python-dotenv==0.3.0
 requests==2.8.1
