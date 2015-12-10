@@ -35,7 +35,7 @@ def main(sc):
 	to_hour(start_time) as hour, postal_code from events where postal_code is not null and start_time is not null")
 
 	events_grouped = sqlContext.sql("select event_date, hour, postal_code, 
-	count(*) from events_filtered group by event_date,hour,postal_code order by hour,postal_code")
+	count(*) from events_filtered group by event_date,hour,postal_code order by postal_code,hour")
 
 	grouped_csv = events_grouped.map(toCSV)
 	grouped_csv.saveAsTextFile('events_cluster')
